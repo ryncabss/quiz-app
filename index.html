@@ -2,274 +2,329 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz App</title>
   <style>
     /* General body styling */
     body {
-      font-family: 'Poppins', sans-serif; /* Stylish modern font */
+      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f5f7fb; /* Soft background color */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
+      overflow-x: hidden; /* Prevent horizontal scrolling */
+      position: relative; /* Allow absolute positioning of fireworks */
+      height: 100vh; /* Ensure full viewport height */
     }
 
-    /* Quiz container with modern style */
-    #quiz-container {
-      background-color: #ffffff;
-      border-radius: 20px; /* Smooth rounded corners */
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-      padding: 40px;
-      width: 100%;
-      max-width: 600px;
-      border: 3px solid #4e73df; /* Blue border for the quiz frame */
-      transition: all 0.3s ease-in-out; /* Smooth transition */
+    /* Button styling for toggling the frame */
+    #toggle-slide-btn {
+      background-color: #E0AA3E; /* Buy Me A Coffee color */
+      color: white;
+      padding: 15px 30px; /* Larger padding */
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      position: fixed;
+      right: 20px; /* Keep the button at the bottom-right */
+      bottom: 20px;
+      z-index: 1001; /* Make sure the button is on top */
+      font-size: 18px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4); /* Slight shadow for depth */
+      transition: all 0.3s ease;
+      border-radius: 12px; /* Rounded corners */
+      background-clip: padding-box; /* Prevent background from covering the border */
+      padding: 20px 40px; /* Larger button size */
     }
 
-    /* Quiz question number */
-    #question-number {
-      font-size: 22px;
-      font-weight: 600;
-      color: #4e73df; /* Vibrant blue */
-      margin-bottom: 15px;
+    /* Rainbow border animation */
+    #toggle-slide-btn {
+      border: 4px solid transparent;
+      background-clip: padding-box;
+      animation: rainbow-border 5s linear infinite;
     }
 
-    /* Quiz question text */
-    #question-text {
-      font-size: 24px;
-      font-weight: 500;
-      color: #333;
-      margin-bottom: 25px;
+    @keyframes rainbow-border {
+      0% { border-color: red; }
+      14% { border-color: orange; }
+      28% { border-color: yellow; }
+      42% { border-color: green; }
+      57% { border-color: blue; }
+      71% { border-color: indigo; }
+      85% { border-color: violet; }
+      100% { border-color: red; }
     }
 
-    /* Answer options styling */
-    #choices {
+    /* Button hover effect */
+    #toggle-slide-btn:hover {
+      background-color: #FFD700; /* Slightly darker gold on hover */
+    }
+
+    /* Frame that will slide in from the right */
+    #sliding-frame {
+      position: fixed;
+      right: -250px; /* Initially hidden off-screen to the right */
+      bottom: 70px; /* Positioned above the button */
+      width: 200px; /* Smaller frame width */
+      height: 150px; /* Smaller frame height */
+      background-color: #f9f9f9;
+      border: 3px solid #4CAF50;
+      padding: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      transition: right 0.5s ease-in-out; /* Smooth slide-in transition */
+      z-index: 1000; /* Ensure it's above other content */
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      justify-content: space-around;
+      align-items: center;
     }
 
-    .choice-btn {
-      background: linear-gradient(45deg, #6a11cb, #2575fc); /* Gradient background */
+    /* Styling for the buttons inside the frame (smaller) */
+    .frame-btn {
+      background-color: #4CAF50;
       color: white;
-      padding: 15px;
-      border-radius: 12px;
+      padding: 8px 16px; /* Smaller button */
       border: none;
-      cursor: pointer;
-      font-size: 18px;
+      border-radius: 5px;
+      text-decoration: none; /* Remove underline from links */
       text-align: center;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      display: block;
+      margin-top: 10px;
     }
 
-    .choice-btn:hover {
-      transform: translateY(-5px); /* Slight lift on hover */
-      background: linear-gradient(45deg, #2575fc, #6a11cb); /* Reverse gradient */
-      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15); /* Stronger shadow */
+    .frame-btn:hover {
+      background-color: #45a049;
     }
 
-    /* Answer text style */
-    #answer {
+    /* Specific colors for buttons */
+    .buy-coffee-btn {
+      background-color: #E0AA3E; /* Buy me a coffee color */
+    }
+
+    .gcash-btn {
+      background-color: #0061F2; /* Gcash color */
+    }
+
+    /* Fireworks effect */
+    .fireworks {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10000;
+      pointer-events: none;
+    }
+    .fireworks .spark {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background-color: #fff;
+      border-radius: 50%;
+      animation: bounce-spark 1.5s infinite;
+    }
+
+    /* Spark Bouncing Animation */
+    @keyframes bounce-spark {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      25% { opacity: 0.8; transform: translateY(-50px) scale(1.2); }
+      50% { opacity: 0.6; transform: translateY(0) scale(1.5); }
+      75% { opacity: 0.8; transform: translateY(50px) scale(1.2); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Fireworks burst animation */
+    .burst {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      animation: burst-animation 1s forwards;
+    }
+
+    @keyframes burst-animation {
+      0% {
+        opacity: 1;
+        transform: scale(0);
+      }
+      50% {
+        opacity: 0.8;
+        transform: scale(3);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(5);
+      }
+    }
+
+    /* Large "THANK YOU SO MUCH" text */
+    #thank-you-text {
+      position: absolute;
+      top: 30%; /* Adjust the vertical position */
+      left: 50%;
+      transform: translateX(-50%); /* Center horizontally */
+      font-size: 60px; /* Large text */
+      color: #E0AA3E; /* Orange-yellow color */
       font-weight: bold;
-      margin-top: 15px;
-      font-size: 18px;
+      text-align: center;
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
+      z-index: 5000; /* Ensure it's above the fireworks */
+      opacity: 0; /* Initially hidden */
+      transition: opacity 1s ease-out; /* Fade out smoothly */
+      line-height: 1.5; /* Add spacing between lines */
+      animation: bounce-text 1.5s infinite; /* Bounce animation */
     }
 
-    /* Correct and incorrect answer styles */
-    .correct {
-      color: #28a745; /* Green for correct */
+    /* Bouncing animation for "THANK YOU SO MUCH" */
+    @keyframes bounce-text {
+      0% {
+        transform: translateY(0);
+      }
+      25% {
+        transform: translateY(-30px);
+      }
+      50% {
+        transform: translateY(0);
+      }
+      75% {
+        transform: translateY(20px);
+      }
+      100% {
+        transform: translateY(0);
+      }
     }
 
-    .incorrect {
-      color: #dc3545; /* Red for incorrect */
+    /* Styling for the quiz frame */
+    #quiz-container {
+      font-family: Arial;
+      max-width: 500px;
+      margin: auto;
+      padding-top: 50px;
     }
 
-    /* Solution button and solution text */
-    #solutionBtn {
-      background-color: #f39c12; /* Bright orange */
+    /* Button styling */
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
       color: white;
-      padding: 12px 25px;
-      border-radius: 10px;
       border: none;
+      border-radius: 5px;
       cursor: pointer;
-      margin-top: 20px;
-      transition: all 0.3s ease;
+      margin-top: 10px;
     }
 
-    #solutionBtn:hover {
-      background-color: #e67e22; /* Darker orange */
-      transform: scale(1.05); /* Slight scale effect */
-    }
-
-    /* Solution text box styling */
-    #solution {
-      display: none;
-      border: 1px solid #ddd;
-      padding: 18px;
-      background-color: #f9f9f9;
-      margin-top: 20px;
-      border-radius: 10px;
-      font-size: 16px;
-      color: #555;
-    }
-
-    /* Navigation buttons styling */
-    .nav-btn {
-      background-color: #4e73df; /* Blue for navigation buttons */
-      color: white;
-      padding: 12px 20px;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      font-size: 18px;
-      margin-top: 25px;
-      transition: background-color 0.3s ease;
-    }
-
-    .nav-btn:hover {
-      background-color: #2e59d9; /* Darker blue on hover */
-      transform: scale(1.05);
-    }
-
-    #prevBtn {
-      margin-right: 20px;
-    }
-
-    /* Responsive design for mobile */
-    @media screen and (max-width: 600px) {
-      #quiz-container {
-        padding: 25px;
-      }
-
-      #question-number {
-        font-size: 18px;
-      }
-
-      #question-text {
-        font-size: 20px;
-      }
-
-      .choice-btn {
-        font-size: 16px;
-        padding: 14px;
-      }
-
-      .nav-btn {
-        font-size: 16px;
-        padding: 10px 18px;
-      }
+    button:hover {
+      background-color: #45a049;
     }
   </style>
 </head>
 <body>
 
-  <div id="quiz-container">
-    <h3 id="question-number">Question 1</h3>
-    <p id="question-text">What is the capital of France?</p>
-    <div id="choices">
-      <button class="choice-btn" onclick="checkAnswer(0)">Berlin</button>
-      <button class="choice-btn" onclick="checkAnswer(1)">Madrid</button>
-      <button class="choice-btn" onclick="checkAnswer(2)">Paris</button>
-      <button class="choice-btn" onclick="checkAnswer(3)">Rome</button>
-    </div>
-    <p id="answer"></p>
-    <button id="solutionBtn" onclick="toggleSolution()">Show Solution</button>
-    <div id="solution">Paris is the capital of France.</div>
-    <button onclick="prevQuestion()" id="prevBtn" class="nav-btn" style="display: none;">← Back</button>
-    <button onclick="nextQuestion()" id="nextBtn" class="nav-btn">Next →</button>
-    <button onclick="restartQuiz()" id="restartBtn" class="nav-btn" style="display: none;">Restart</button>
+  <!-- Large Thank You Text (initially hidden) -->
+  <div id="thank-you-text">THANK YOU SO MUCH</div>
+
+  <!-- Sliding Frame -->
+  <div id="sliding-frame">
+    <!-- Buttons inside the frame -->
+    <a href="https://buymeacoffee.com/mindcells" class="frame-btn buy-coffee-btn" target="_blank">Buy me a coffee</a>
+    <a href="https://www.gcash.com/" class="frame-btn gcash-btn" target="_blank">Send Me Via Gcash</a>
   </div>
 
+  <!-- Button to toggle the sliding frame -->
+  <button id="toggle-slide-btn" onclick="toggleSlidingFrame()">Buy Me A Coffee</button>
+
+  <!-- Quiz Container -->
+  <div id="quiz-container">
+    <h3 id="question-number"></h3>
+    <p id="question-text"></p>
+    <div id="choices"></div>
+    <p id="answer" style="font-weight: bold;"></p>
+    <button id="solutionBtn" onclick="toggleSolution()" style="display: none; margin-top: 10px;">Show Solution</button>
+    <div id="solution" style="display: none; border: 1px solid #ccc; padding: 10px; margin-top: 10px; background-color: #f9f9f9;"></div>
+    <div style="margin-top: 20px;">
+      <button onclick="prevQuestion()" id="prevBtn" style="display: none;">← Back</button>
+      <button onclick="nextQuestion()" id="nextBtn">Next →</button>
+      <button onclick="restartQuiz()" id="restartBtn" style="display: none;">Restart</button>
+    </div>
+  </div>
+
+  <script src="quiz-data.js"></script>
+  <script src="quiz-functions.js"></script>
+  
+  <!-- Fireworks container -->
+  <div id="fireworks" class="fireworks"></div>
+
   <script>
-    let currentQuestionIndex = 0;
-    const questions = [
-      {
-        question: "What is the capital of France?",
-        choices: ["Berlin", "Madrid", "Paris", "Rome"],
-        correctAnswer: 2,
-        solution: "Paris is the capital of France."
-      },
-      // Additional questions can go here
-    ];
+    let clickCount = 0;
+    let intervalId;
 
-    function displayQuestion() {
-      const question = questions[currentQuestionIndex];
-      document.getElementById('question-number').textContent = `Question ${currentQuestionIndex + 1}`;
-      document.getElementById('question-text').textContent = question.question;
-      const choicesContainer = document.getElementById('choices');
-      choicesContainer.innerHTML = ''; // Clear previous choices
-      question.choices.forEach((choice, index) => {
-        const button = document.createElement('button');
-        button.classList.add('choice-btn');
-        button.textContent = choice;
-        button.onclick = () => checkAnswer(index);
-        choicesContainer.appendChild(button);
-      });
-    }
+    // Function to toggle the sliding frame
+    function toggleSlidingFrame() {
+      const frame = document.getElementById('sliding-frame');
+      const toggleBtn = document.getElementById('toggle-slide-btn');
+      const fireworksContainer = document.getElementById('fireworks');
+      const thankYouText = document.getElementById('thank-you-text');
 
-    function checkAnswer(selectedIndex) {
-      const question = questions[currentQuestionIndex];
-      const answerText = document.getElementById('answer');
-      if (selectedIndex === question.correctAnswer) {
-        answerText.textContent = 'Correct!';
-        answerText.classList.add('correct');
-        answerText.classList.remove('incorrect');
+      // Show the large "THANK YOU SO MUCH" text
+      thankYouText.style.opacity = 1; // Fade it in
+      showFireworks(fireworksContainer); // Trigger fireworks animation
+
+      // Fireworks effect
+      setTimeout(() => {
+        // Hide the "THANK YOU SO MUCH" text after fireworks show
+        thankYouText.style.opacity = 0; // Fade it out
+      }, 3000); // Hide text after 3 seconds (duration of fireworks)
+
+      // Toggle sliding frame
+      if (frame.style.right === '20px') {
+        // Slide it out of view (off to the right)
+        frame.style.right = '-250px';
+        toggleBtn.textContent = 'Show Frame';
       } else {
-        answerText.textContent = `Incorrect! The correct answer is: ${question.choices[question.correctAnswer]}`;
-        answerText.classList.add('incorrect');
-        answerText.classList.remove('correct');
-      }
-      document.getElementById('solution').textContent = question.solution;
-      document.getElementById('solutionBtn').style.display = 'inline-block';
-      document.getElementById('nextBtn').style.display = 'inline-block';
-    }
-
-    function toggleSolution() {
-      const solution = document.getElementById('solution');
-      solution.style.display = solution.style.display === 'none' ? 'block' : 'none';
-    }
-
-    function nextQuestion() {
-      currentQuestionIndex++;
-      if (currentQuestionIndex < questions.length) {
-        displayQuestion();
-        document.getElementById('answer').textContent = '';
-        document.getElementById('solution').style.display = 'none';
-        document.getElementById('solutionBtn').style.display = 'none';
-        document.getElementById('nextBtn').style.display = 'none';
-      } else {
-        alert('You have completed the quiz!');
+        // Slide it in from the right
+        frame.style.right = '20px'; // Position it 20px from the right edge
+        toggleBtn.textContent = 'Hide Frame';
       }
     }
 
-    function prevQuestion() {
-      if (currentQuestionIndex > 0) {
-        currentQuestionIndex--;
-        displayQuestion();
-        document.getElementById('answer').textContent = '';
-        document.getElementById('solution').style.display = 'none';
-        document.getElementById('solutionBtn').style.display = 'none';
-        document.getElementById('nextBtn').style.display = 'none';
+    // Function to show fireworks animation
+    function showFireworks(container) {
+      // Create burst effects to simulate fireworks
+      for (let i = 0; i < 5; i++) {
+        let burst = document.createElement('div');
+        burst.classList.add('burst');
+        burst.style.left = `${Math.random() * 100}%`;
+        burst.style.top = `${Math.random() * 100}%`;
+        burst.style.backgroundColor = getRandomColor();
+        container.appendChild(burst);
+
+        // Remove burst after animation ends
+        setTimeout(() => {
+          container.removeChild(burst);
+        }, 1000);
+      }
+
+      // Generate sparks
+      for (let i = 0; i < 50; i++) {
+        let spark = document.createElement('div');
+        spark.classList.add('spark');
+        spark.style.left = `${Math.random() * 100}%`;
+        spark.style.top = `${Math.random() * 100}%`;
+        spark.style.animationDuration = `${Math.random() * 1 + 1}s`;
+        spark.style.backgroundColor = getRandomColor();
+        container.appendChild(spark);
+
+        // Remove spark after animation ends
+        setTimeout(() => {
+          container.removeChild(spark);
+        }, 1000);
       }
     }
 
-    function restartQuiz() {
-      currentQuestionIndex = 0;
-      displayQuestion();
-      document.getElementById('answer').textContent = '';
-      document.getElementById('solution').style.display = 'none';
-      document.getElementById('solutionBtn').style.display = 'none';
-      document.getElementById('nextBtn').style.display = 'inline-block';
-      document.getElementById('prevBtn').style.display = 'none';
+    // Function to get a random color for fireworks
+    function getRandomColor() {
+      const colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3'];
+      return colors[Math.floor(Math.random() * colors.length)];
     }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      displayQuestion();
-    });
   </script>
 
 </body>
