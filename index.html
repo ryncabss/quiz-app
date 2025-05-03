@@ -212,6 +212,18 @@
   </style>
 </head>
 <body>
+<div style="max-width: 600px; margin: 100px auto; text-align: center;">
+  <h2 id="question-number"></h2>
+  <p id="question-text"></p>
+  <div id="choices"></div>
+  <p id="answer" style="font-weight: bold;"></p>
+  <div id="solution" style="display:none; margin-top: 10px;"></div>
+  <button id="solutionBtn" onclick="toggleSolution()" style="display:none; margin: 10px;">Show Solution</button>
+  <br><br>
+  <button id="prevBtn" onclick="prevQuestion()">Previous</button>
+  <button id="nextBtn" onclick="nextQuestion()">Next</button>
+  <button id="restartBtn" onclick="restartQuiz()" style="display:none;">Restart</button>
+</div>
 
   <!-- Large Thank You Text (initially hidden) -->
   <div id="thank-you-text">THANK YOU SO MUCH</div>
