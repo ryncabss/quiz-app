@@ -32,7 +32,6 @@ const quizData = [
         correctAnswer: "B",
         solution: "A retaining wall is designed to resist the lateral pressure of soil or rock when there is a change in ground elevation."
     }
-    // Add more questions as needed
 ];
 
 function shuffleArray(arr) {
