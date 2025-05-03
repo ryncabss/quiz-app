@@ -1,21 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><title>Quiz App</title></head>
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz App</title>
+  <style>
+    /* Frame styling */
+    #quiz-frame {
+      border: 3px solid #4CAF50; /* Green border for the frame */
+      padding: 20px;
+      margin: 20px;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+    }
+
+    /* Styling for the toggle button */
+    #toggle-frame-btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    #toggle-frame-btn:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
 <body>
-<div id="quiz-container" style="font-family: Arial; max-width: 500px; margin: auto;">
-  <h3 id="question-number"></h3>
-  <p id="question-text"></p>
-  <div id="choices"></div>
-  <p id="answer" style="font-weight: bold;"></p>
-  <button id="solutionBtn" onclick="toggleSolution()" style="display: none; margin-top: 10px;">Show Solution</button>
-  <div id="solution" style="display: none; border: 1px solid #ccc; padding: 10px; margin-top: 10px; background-color: #f9f9f9;"></div>
-  <div style="margin-top: 20px;">
-    <button onclick="prevQuestion()" id="prevBtn" style="display: none;">← Back</button>
-    <button onclick="nextQuestion()" id="nextBtn">Next →</button>
-    <button onclick="restartQuiz()" id="restartBtn" style="display: none;">Restart</button>
+  <div style="text-align: center; margin-top: 20px;">
+    <!-- Toggle button for showing/hiding the frame -->
+    <button id="toggle-frame-btn" onclick="toggleFrame()">Hide Frame</button>
   </div>
-</div>
-<script src="quiz-data.js"></script>
-<script src="quiz-functions.js"></script>
+
+  <!-- Quiz container inside a frame -->
+  <div id="quiz-frame">
+    <div id="quiz-container" style="font-family: Arial; max-width: 500px; margin: auto;">
+      <h3 id="question-number"></h3>
+      <p id="question-text"></p>
+      <div id="choices"></div>
+      <p id="answer" style="font-weight: bold;"></p>
+      <button id="solutionBtn" onclick="toggleSolution()" style="display: none; margin-top: 10px;">Show Solution</button>
+      <div id="solution" style="display: none; border: 1px solid #ccc; padding: 10px; margin-top: 10px; background-color: #f9f9f9;"></div>
+      <div style="margin-top: 20px;">
+        <button onclick="prevQuestion()" id="prevBtn" style="display: none;">← Back</button>
+        <button onclick="nextQuestion()" id="nextBtn">Next →</button>
+        <button onclick="restartQuiz()" id="restartBtn" style="display: none;">Restart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Link to external JS files -->
+  <script src="quiz-data.js"></script>
+  <script src="quiz-functions.js"></script>
+
+  <script>
+    // JavaScript function to toggle the visibility of the frame
+    function toggleFrame() {
+      const frame = document.getElementById('quiz-frame');
+      const toggleBtn = document.getElementById('toggle-frame-btn');
+      
+      if (frame.style.display === 'none') {
+        frame.style.display = 'block';
+        toggleBtn.textContent = 'Hide Frame';
+      } else {
+        frame.style.display = 'none';
+        toggleBtn.textContent = 'Show Frame';
+      }
+    }
+  </script>
 </body>
 </html>
