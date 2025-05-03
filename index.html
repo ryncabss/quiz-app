@@ -255,4 +255,82 @@
         // Slide it out of view (off to the right)
         frame.style.right = '-250px';
         toggleBtn.textContent = 'Show Frame';
-        toggleBtn.style.backgroundColor
+        toggleBtn.style.backgroundColor = '#E0AA3E'; // Buy me a coffee color
+      } else {
+        // Slide it in from the right
+        frame.style.right = '20px'; // Position it 20px from the right edge
+        toggleBtn.textContent = 'Hide Frame';
+        toggleBtn.style.backgroundColor = '#E0AA3E'; // Buy me a coffee color
+      }
+    }
+
+    // Function to handle the button text changes every 3 seconds (without button click)
+    function changeButtonText() {
+      const toggleBtn = document.getElementById('toggle-slide-btn');
+      let buttonTextIndex = 0;
+
+      const buttonTexts = [
+        { text: "Buy Me A Coffee", color: "#E0AA3E" }, // Initial text and color
+        { text: "Send Me Via Gcash", color: "#0061F2" }, // Second text and color
+        { text: "Pretty Please! Thank you!", color: "#9ACD32" }, // Third text and color
+      ];
+
+      // Function to change the button text every 3 seconds
+      intervalId = setInterval(() => {
+        if (buttonTextIndex < buttonTexts.length) {
+          const { text, color } = buttonTexts[buttonTextIndex];
+          toggleBtn.textContent = text;
+          toggleBtn.style.backgroundColor = color;
+          buttonTextIndex++;
+        } else {
+          buttonTextIndex = 0; // Reset index to start again
+        }
+      }, 3000); // Change text every 3 seconds
+    }
+
+    // Function to generate fireworks animation
+    function showFireworks(container) {
+      // Create burst effects to simulate fireworks
+      for (let i = 0; i < 5; i++) {
+        let burst = document.createElement('div');
+        burst.classList.add('burst');
+        burst.style.left = `${Math.random() * 100}%`;
+        burst.style.top = `${Math.random() * 100}%`;
+        burst.style.backgroundColor = getRandomColor();
+        container.appendChild(burst);
+
+        // Remove burst after animation ends
+        setTimeout(() => {
+          container.removeChild(burst);
+        }, 1000);
+      }
+
+      // Generate sparks
+      for (let i = 0; i < 50; i++) {
+        let spark = document.createElement('div');
+        spark.classList.add('spark');
+        spark.style.left = `${Math.random() * 100}%`;
+        spark.style.top = `${Math.random() * 100}%`;
+        spark.style.animationDuration = `${Math.random() * 1 + 1}s`;
+        spark.style.backgroundColor = getRandomColor();
+        container.appendChild(spark);
+
+        // Remove spark after animation ends
+        setTimeout(() => {
+          container.removeChild(spark);
+        }, 1000);
+      }
+    }
+
+    // Function to get a random color for fireworks
+    function getRandomColor() {
+      const colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3'];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    // Start changing the button text
+    changeButtonText();
+
+  </script>
+</body>
+</html>
