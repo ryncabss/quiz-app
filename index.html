@@ -3,32 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Civil Engineering Quiz</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Modern Style Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .quiz-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 400px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid #ddd;
+            text-align: center;
+        }
+        h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .question {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .answer-btn {
+            background-color: #f1f1f1;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            font-size: 16px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .answer-btn:hover {
+            background-color: #e0e0e0;
+        }
+        .answer-btn.correct {
+            background-color: #28a745;
+            color: white;
+        }
+        .answer-btn.wrong {
+            background-color: #dc3545;
+            color: white;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+        .finish-btn, .restart-btn {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .finish-btn:hover, .restart-btn:hover {
+            background-color: #0056b3;
+        }
+        .solution {
+            display: none;
+            background-color: #f0f8ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px solid #ccc;
+        }
+        .solution p {
+            font-size: 16px;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-    <div id="quiz-container">
-        <h1>Civil Engineering Quiz</h1>
-        
-        <!-- Aim Section -->
-        <div id="aim">
-            <p>Test your Civil Engineering knowledge with this fun quiz!</p>
+    <div class="quiz-container">
+        <h2>Quiz Question</h2>
+        <div class="question-container">
+            <!-- Question and options will be loaded here -->
         </div>
 
-        <!-- Quiz Content -->
-        <div id="quiz"></div>
+        <div class="solution">
+            <strong>Solution:</strong>
+            <p></p>
+        </div>
 
-        <!-- Solution Section -->
-        <div id="solution" style="display: none;"></div>
-
-        <!-- Navigation Buttons -->
-        <div id="buttons">
-            <button id="prev-btn" style="display: none;">Back</button>
-            <button id="next-btn">Next</button>
+        <div class="button-container">
+            <button class="finish-btn" onclick="finishQuiz()">Finish</button>
+            <button class="restart-btn" onclick="restartQuiz()">Restart</button>
         </div>
     </div>
 
     <script src="quiz-data.js"></script>
     <script src="quiz-functions.js"></script>
+    <script>
+        let currentQuestionIndex = 0; // Track the current question index
+
+        // Initialize the quiz when the page loads
+        initializeQuiz();
+    </script>
 </body>
 </html>
