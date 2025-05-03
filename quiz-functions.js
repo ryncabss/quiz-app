@@ -1,69 +1,84 @@
-let currentQuestion = 0;
-function loadQuestion() {
-  const q = questions[currentQuestion];
-  document.getElementById("question-number").innerText = `Question ${currentQuestion + 1}`;
-  document.getElementById("question-text").innerText = q.text;
-  const choicesContainer = document.getElementById("choices");
-  choicesContainer.innerHTML = "";
-  document.getElementById("answer").innerText = "";
-  document.getElementById("answer").style.color = "";
-  document.getElementById("solution").style.display = "none";
-  document.getElementById("solutionBtn").style.display = "none";
-  document.getElementById("solution").innerHTML = q.solution;
-  q.choices.forEach((choice) => {
-    const btn = document.createElement("button");
-    btn.innerText = choice.text;
-    btn.style.marginBottom = "10px";
-    btn.onclick = () => checkAnswer(btn, choice.correct);
-    choicesContainer.appendChild(btn);
-    choicesContainer.appendChild(document.createElement("br"));
-  });
-  document.getElementById("prevBtn").style.display = currentQuestion > 0 ? "inline-block" : "none";
-  document.getElementById("nextBtn").style.display = currentQuestion < questions.length - 1 ? "inline-block" : "none";
-  document.getElementById("restartBtn").style.display = currentQuestion === questions.length - 1 ? "inline-block" : "none";
+let currentQuestionIndex = 0;
+let userAnswers = [];
+
+// Shuffle quiz data on page load
+window.onload = function() {
+    shuffleArray(quizData);
+    displayQuestion();
+};
+
+// Display the current question
+function displayQuestion() {
+    const quizContainer = document.getElementById("quiz");
+    quizContainer.innerHTML = "";
+
+    const questionData = quizData[currentQuestionIndex];
+    const questionElement = document.createElement("div");
+
+    // Display question
+    questionElement.innerHTML = `<h2>${questionData.question}</h2>`;
+    quizContainer.appendChild(questionElement);
+
+    // Display options
+    questionData.options.forEach(option => {
+        const optionElement = document.createElement("div");
+        optionElement.innerHTML = `<label><input type="radio" name="answer" value="${option}"> ${option}</label>`;
+        quizContainer.appendChild(optionElement);
+    });
+
+    // Show next button after answering
+    const nextButton = document.getElementById("next-btn");
+    nextButton.style.display = "none";
+    document.getElementById("submit-btn").style.display = "block";
+
+    // Handle submit answer
+    document.getElementById("submit-btn").onclick = function() {
+        handleAnswerSubmission(questionData.correctAnswer);
+        document.getElementById("submit-btn").style.display = "none";
+        nextButton.style.display = "block";
+    };
 }
-function checkAnswer(btn, isCorrect) {
-  const buttons = document.querySelectorAll('#choices button');
-  buttons.forEach(b => b.disabled = true);
-  const answerText = document.getElementById("answer");
-  if (isCorrect) {
-    btn.style.backgroundColor = "green";
-    btn.style.color = "white";
-    answerText.innerText = "Correct!";
-    answerText.style.color = "green";
-  } else {
-    btn.style.backgroundColor = "red";
-    btn.style.color = "white";
-    answerText.innerText = "Incorrect.";
-    answerText.style.color = "red";
-    const correctBtn = Array.from(buttons).find(b =>
-      questions[currentQuestion].choices.find(c => c.text === b.innerText && c.correct)
-    );
-    if (correctBtn) {
-      correctBtn.style.backgroundColor = "green";
-      correctBtn.style.color = "white";
+
+// Handle the submission of answers
+function handleAnswerSubmission(correctAnswer) {
+    const selectedOption = document.querySelector('input[name="answer"]:checked');
+    if (selectedOption) {
+        const userAnswer = selectedOption.value;
+        userAnswers[currentQuestionIndex] = userAnswer;
+
+        const allOptions = document.querySelectorAll('input[name="answer"]');
+        allOptions.forEach(option => {
+            const optionLabel = option.parentElement;
+            if (option.value === correctAnswer) {
+                optionLabel.style.backgroundColor = "green"; // Correct answer
+            } else if (option.value === userAnswer) {
+                optionLabel.style.backgroundColor = "red"; // Wrong answer
+            }
+        });
     }
-  }
-  document.getElementById("solutionBtn").style.display = "inline-block";
 }
-function toggleSolution() {
-  const sol = document.getElementById("solution");
-  sol.style.display = sol.style.display === "none" ? "block" : "none";
+
+// Move to next question
+document.getElementById("next-btn").onclick = function() {
+    if (currentQuestionIndex < quizData.length - 1) {
+        currentQuestionIndex++;
+        displayQuestion();
+    } else {
+        displayResults();
+    }
+};
+
+// Display final results after quiz completion
+function displayResults() {
+    const resultContainer = document.getElementById("result");
+    let correctCount = 0;
+
+    quizData.forEach((question, index) => {
+        const userAnswer = userAnswers[index];
+        if (userAnswer === question.correctAnswer) {
+            correctCount++;
+        }
+    });
+
+    resultContainer.innerHTML = `<h3>You answered ${correctCount} out of ${quizData.length} correctly.</h3>`;
 }
-function nextQuestion() {
-  if (currentQuestion < questions.length - 1) {
-    currentQuestion++;
-    loadQuestion();
-  }
-}
-function prevQuestion() {
-  if (currentQuestion > 0) {
-    currentQuestion--;
-    loadQuestion();
-  }
-}
-function restartQuiz() {
-  currentQuestion = 0;
-  loadQuestion();
-}
-window.onload = loadQuestion;
