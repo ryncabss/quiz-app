@@ -1,42 +1,34 @@
+// Quiz Data
 const quizData = [
     {
-        question: "What is the unit of Young's Modulus?",
-        options: {
-            A: "Pa",
-            B: "Nm²",
-            C: "kg/m³",
-            D: "m/s²"
-        },
-        correctAnswer: "A",
-        solution: "Young's Modulus is a measure of the stiffness of a material, and its unit is Pascals (Pa)."
+        question: "Of the 20 men, 5 belong to A, 7 to B, and 9 to C...",
+        options: [
+            { answer: "a. 6", correct: false },
+            { answer: "b. 7", correct: false },
+            { answer: "c. 5", correct: true },
+            { answer: "d. 8", correct: false }
+        ],
+        solution: "Therefore, 20 - 14 = <strong>5 men belong to none</strong>."
+    },
+    // You can add more questions here
+    {
+        question: "Which is the capital of France?",
+        options: [
+            { answer: "a. Berlin", correct: false },
+            { answer: "b. Madrid", correct: false },
+            { answer: "c. Paris", correct: true },
+            { answer: "d. Rome", correct: false }
+        ],
+        solution: "The capital of France is <strong>Paris</strong>."
     },
     {
-        question: "Which material is known as the 'King of Building Materials'?",
-        options: {
-            A: "Wood",
-            B: "Concrete",
-            C: "Steel",
-            D: "Brick"
-        },
-        correctAnswer: "B",
-        solution: "Concrete is widely used in construction and is considered the most important building material."
-    },
-    {
-        question: "What is the main purpose of a retaining wall?",
-        options: {
-            A: "To support a structure",
-            B: "To hold back soil",
-            C: "To provide insulation",
-            D: "To divide spaces"
-        },
-        correctAnswer: "B",
-        solution: "A retaining wall is designed to resist the lateral pressure of soil or rock when there is a change in ground elevation."
+        question: "What is 2 + 2?",
+        options: [
+            { answer: "a. 3", correct: false },
+            { answer: "b. 4", correct: true },
+            { answer: "c. 5", correct: false },
+            { answer: "d. 6", correct: false }
+        ],
+        solution: "2 + 2 = <strong>4</strong>."
     }
 ];
-
-function shuffleArray(arr) {
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-}
