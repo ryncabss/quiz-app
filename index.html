@@ -58,10 +58,12 @@
     }
     .btn-group {
       margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
     }
     button {
       padding: 10px 20px;
-      margin: 5px;
       font-size: 16px;
       border: none;
       border-radius: 5px;
@@ -76,6 +78,16 @@
     .hidden {
       display: none;
     }
+    .solution {
+      display: none;
+      background-color: #f0f8ff;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+      border: 2px solid #ccc;
+      font-size: 16px;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
@@ -86,14 +98,22 @@
     <div id="question-area" class="hidden">
       <p class="question" id="question-text"></p>
       <div id="answer-buttons"></div>
+      <div class="solution" id="solution-box">
+        <strong>Solution:</strong>
+        <p id="solution-text"></p>
+      </div>
     </div>
 
     <div class="btn-group">
-      <button id="start-btn" onclick="startQuiz()">START</button>
       <button id="back-btn" class="hidden" onclick="previousQuestion()">BACK</button>
-      <button id="next-btn" class="hidden" onclick="nextQuestion()">NEXT</button>
-      <button id="finish-btn" class="hidden" onclick="finishQuiz()">FINISH</button>
-      <button id="restart-btn" class="hidden" onclick="restartQuiz()">RESTART</button>
+      <div style="margin-left:auto;">
+        <button id="next-btn" class="hidden" onclick="nextQuestion()">NEXT</button>
+        <button id="finish-btn" class="hidden" onclick="finishQuiz()">FINISH</button>
+      </div>
+    </div>
+
+    <div class="btn-group" style="justify-content: center;">
+      <button id="start-btn" onclick="startQuiz()">START</button>
     </div>
   </div>
 
@@ -105,18 +125,18 @@
     const backBtn = document.getElementById("back-btn");
     const nextBtn = document.getElementById("next-btn");
     const finishBtn = document.getElementById("finish-btn");
-    const restartBtn = document.getElementById("restart-btn");
 
     const questionArea = document.getElementById("question-area");
     const questionText = document.getElementById("question-text");
     const answerButtons = document.getElementById("answer-buttons");
+    const solutionBox = document.getElementById("solution-box");
+    const solutionText = document.getElementById("solution-text");
 
     function startQuiz() {
       startBtn.classList.add("hidden");
       questionArea.classList.remove("hidden");
-      backBtn.classList.remove("hidden");
-      nextBtn.classList.remove("hidden");
       document.getElementById("quiz-title").textContent = "Question 1";
+      currentQuestionIndex = 0;
       loadQuestion();
     }
 
@@ -124,23 +144,23 @@
       const question = quizData[currentQuestionIndex];
       questionText.innerText = question.question;
       answerButtons.innerHTML = "";
+      solutionBox.style.display = "none";
 
       question.options.forEach(opt => {
         const btn = document.createElement("button");
         btn.innerText = opt.answer;
         btn.classList.add("answer-btn");
-        btn.onclick = () => selectAnswer(btn, opt.correct);
+        btn.onclick = () => selectAnswer(btn, opt.correct, question.solution);
         answerButtons.appendChild(btn);
       });
 
-      // Control button visibility
       backBtn.style.display = currentQuestionIndex === 0 ? "none" : "inline-block";
       nextBtn.style.display = currentQuestionIndex < quizData.length - 1 ? "inline-block" : "none";
       finishBtn.style.display = currentQuestionIndex === quizData.length - 1 ? "inline-block" : "none";
       document.getElementById("quiz-title").textContent = `Question ${currentQuestionIndex + 1}`;
     }
 
-    function selectAnswer(button, isCorrect) {
+    function selectAnswer(button, isCorrect, solution) {
       const buttons = document.querySelectorAll(".answer-btn");
       buttons.forEach(btn => btn.disabled = true);
 
@@ -148,9 +168,15 @@
         button.classList.add("correct");
       } else {
         button.classList.add("wrong");
-        const correctBtn = Array.from(buttons).find(b => quizData[currentQuestionIndex].options.find(opt => opt.answer === b.innerText && opt.correct));
+        const correctBtn = Array.from(buttons).find(b =>
+          quizData[currentQuestionIndex].options.find(opt => opt.answer === b.innerText && opt.correct)
+        );
         if (correctBtn) correctBtn.classList.add("correct");
       }
+
+      // Show solution
+      solutionText.innerText = solution;
+      solutionBox.style.display = "block";
     }
 
     function nextQuestion() {
@@ -169,24 +195,17 @@
 
     function finishQuiz() {
       alert("You have completed the quiz!");
-      questionArea.classList.add("hidden");
-      finishBtn.classList.add("hidden");
-      backBtn.classList.add("hidden");
-      nextBtn.classList.add("hidden");
-      restartBtn.classList.remove("hidden");
-      document.getElementById("quiz-title").textContent = "Quiz Completed!";
+      resetToStart();
     }
 
-    function restartQuiz() {
+    function resetToStart() {
       currentQuestionIndex = 0;
-      quizData.sort(() => Math.random() - 0.5); // Shuffle
-      restartBtn.classList.add("hidden");
-      questionArea.classList.remove("hidden");
-      backBtn.classList.remove("hidden");
-      nextBtn.classList.remove("hidden");
+      questionArea.classList.add("hidden");
+      startBtn.classList.remove("hidden");
+      backBtn.classList.add("hidden");
+      nextBtn.classList.add("hidden");
       finishBtn.classList.add("hidden");
-      document.getElementById("quiz-title").textContent = "Question 1";
-      loadQuestion();
+      document.getElementById("quiz-title").textContent = "QUIZ";
     }
   </script>
 </body>
