@@ -1,19 +1,37 @@
 const quizData = [
     {
         question: "What is the unit of Young's Modulus?",
-        options: ["Pa", "Nm²", "kg/m³", "m/s²"],
-        correctAnswer: "Pa"
+        options: {
+            A: "Pa",
+            B: "Nm²",
+            C: "kg/m³",
+            D: "m/s²"
+        },
+        correctAnswer: "A",
+        solution: "Young's Modulus is a measure of the stiffness of a material and its unit is Pascals (Pa)."
     },
     {
         question: "Which material is known as the 'King of Building Materials'?",
-        options: ["Wood", "Concrete", "Steel", "Brick"],
-        correctAnswer: "Concrete"
+        options: {
+            A: "Wood",
+            B: "Concrete",
+            C: "Steel",
+            D: "Brick"
+        },
+        correctAnswer: "B",
+        solution: "Concrete is widely used in construction and is considered the most important building material."
     },
     {
         question: "What is the main purpose of a retaining wall?",
-        options: ["To support a structure", "To hold back soil", "To provide insulation", "To divide spaces"],
-        correctAnswer: "To hold back soil"
-    },
+        options: {
+            A: "To support a structure",
+            B: "To hold back soil",
+            C: "To provide insulation",
+            D: "To divide spaces"
+        },
+        correctAnswer: "B",
+        solution: "A retaining wall is designed to resist the lateral pressure of soil or rock when there is a change in ground elevation."
+    }
     // Add more questions as needed
 ];
 
