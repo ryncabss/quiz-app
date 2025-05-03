@@ -42,30 +42,14 @@
     }
 
     @keyframes rainbow-border {
-      0% {
-        border-color: red;
-      }
-      14% {
-        border-color: orange;
-      }
-      28% {
-        border-color: yellow;
-      }
-      42% {
-        border-color: green;
-      }
-      57% {
-        border-color: blue;
-      }
-      71% {
-        border-color: indigo;
-      }
-      85% {
-        border-color: violet;
-      }
-      100% {
-        border-color: red;
-      }
+      0% { border-color: red; }
+      14% { border-color: orange; }
+      28% { border-color: yellow; }
+      42% { border-color: green; }
+      57% { border-color: blue; }
+      71% { border-color: indigo; }
+      85% { border-color: violet; }
+      100% { border-color: red; }
     }
 
     /* Button hover effect */
@@ -209,10 +193,31 @@
       }
     }
 
+    /* Styling for the quiz frame */
+    #quiz-container {
+      font-family: Arial;
+      max-width: 500px;
+      margin: auto;
+      padding-top: 50px;
+    }
+
+    /* Button styling */
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
   </style>
 </head>
 <body>
-
 
   <!-- Large Thank You Text (initially hidden) -->
   <div id="thank-you-text">THANK YOU SO MUCH</div>
@@ -227,25 +232,26 @@
   <!-- Button to toggle the sliding frame -->
   <button id="toggle-slide-btn" onclick="toggleSlidingFrame()">Buy Me A Coffee</button>
 
-  <div id="quiz-container" style="font-family: Arial; max-width: 500px; margin: auto;">
-  <h3 id="question-number"></h3>
-  <p id="question-text"></p>
-  <div id="choices"></div>
-  <p id="answer" style="font-weight: bold;"></p>
-  <button id="solutionBtn" onclick="toggleSolution()" style="display: none; margin-top: 10px;">Show Solution</button>
-  <div id="solution" style="display: none; border: 1px solid #ccc; padding: 10px; margin-top: 10px; background-color: #f9f9f9;"></div>
-  <div style="margin-top: 20px;">
-    <button onclick="prevQuestion()" id="prevBtn" style="display: none;">← Back</button>
-    <button onclick="nextQuestion()" id="nextBtn">Next →</button>
-    <button onclick="restartQuiz()" id="restartBtn" style="display: none;">Restart</button>
+  <!-- Quiz Container -->
+  <div id="quiz-container">
+    <h3 id="question-number"></h3>
+    <p id="question-text"></p>
+    <div id="choices"></div>
+    <p id="answer" style="font-weight: bold;"></p>
+    <button id="solutionBtn" onclick="toggleSolution()" style="display: none; margin-top: 10px;">Show Solution</button>
+    <div id="solution" style="display: none; border: 1px solid #ccc; padding: 10px; margin-top: 10px; background-color: #f9f9f9;"></div>
+    <div style="margin-top: 20px;">
+      <button onclick="prevQuestion()" id="prevBtn" style="display: none;">← Back</button>
+      <button onclick="nextQuestion()" id="nextBtn">Next →</button>
+      <button onclick="restartQuiz()" id="restartBtn" style="display: none;">Restart</button>
+    </div>
   </div>
-</div>
-<script src="quiz-data.js"></script>
-<script src="quiz-functions.js"></script>
+
+  <script src="quiz-data.js"></script>
+  <script src="quiz-functions.js"></script>
   
   <!-- Fireworks container -->
   <div id="fireworks" class="fireworks"></div>
-
 
   <script>
     let clickCount = 0;
@@ -273,40 +279,14 @@
         // Slide it out of view (off to the right)
         frame.style.right = '-250px';
         toggleBtn.textContent = 'Show Frame';
-        toggleBtn.style.backgroundColor = '#E0AA3E'; // Buy me a coffee color
       } else {
         // Slide it in from the right
         frame.style.right = '20px'; // Position it 20px from the right edge
         toggleBtn.textContent = 'Hide Frame';
-        toggleBtn.style.backgroundColor = '#E0AA3E'; // Buy me a coffee color
       }
     }
 
-    // Function to handle the button text changes every 3 seconds (without button click)
-    function changeButtonText() {
-      const toggleBtn = document.getElementById('toggle-slide-btn');
-      let buttonTextIndex = 0;
-
-      const buttonTexts = [
-        { text: "Buy Me A Coffee", color: "#E0AA3E" }, // Initial text and color
-        { text: "Send Me Via Gcash", color: "#0061F2" }, // Second text and color
-        { text: "Pretty Please! Thank you!", color: "#9ACD32" }, // Third text and color
-      ];
-
-      // Function to change the button text every 3 seconds
-      intervalId = setInterval(() => {
-        if (buttonTextIndex < buttonTexts.length) {
-          const { text, color } = buttonTexts[buttonTextIndex];
-          toggleBtn.textContent = text;
-          toggleBtn.style.backgroundColor = color;
-          buttonTextIndex++;
-        } else {
-          buttonTextIndex = 0; // Reset index to start again
-        }
-      }, 3000); // Change text every 3 seconds
-    }
-
-    // Function to generate fireworks animation
+    // Function to show fireworks animation
     function showFireworks(container) {
       // Create burst effects to simulate fireworks
       for (let i = 0; i < 5; i++) {
@@ -345,10 +325,7 @@
       const colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3'];
       return colors[Math.floor(Math.random() * colors.length)];
     }
-
-    // Start changing the button text
-    changeButtonText();
-
   </script>
+
 </body>
 </html>
