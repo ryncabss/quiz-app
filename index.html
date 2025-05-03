@@ -16,6 +16,7 @@
       align-items: center;
       height: 100vh;
     }
+
     .quiz-container {
       background-color: white;
       padding: 30px;
@@ -25,14 +26,19 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       border: 2px solid #ccc;
     }
+
     h2 {
       margin-bottom: 20px;
       font-size: 28px;
+      color: #000;
     }
+
     .question {
       font-size: 18px;
       margin-bottom: 20px;
+      color: #000;
     }
+
     .answer-btn {
       display: block;
       width: 100%;
@@ -43,25 +49,31 @@
       background-color: #f1f1f1;
       font-size: 16px;
       cursor: pointer;
+      color: #000;
       transition: 0.3s;
     }
+
     .answer-btn:hover {
       background-color: #e0e0e0;
     }
+
     .answer-btn.correct {
       background-color: #28a745;
       color: white;
     }
+
     .answer-btn.wrong {
       background-color: #dc3545;
       color: white;
     }
+
     .btn-group {
       margin-top: 20px;
       display: flex;
       justify-content: space-between;
       gap: 10px;
     }
+
     button {
       padding: 10px 20px;
       font-size: 16px;
@@ -72,12 +84,15 @@
       cursor: pointer;
       transition: 0.3s;
     }
+
     button:hover {
       background-color: #0056b3;
     }
+
     .hidden {
       display: none;
     }
+
     .solution {
       display: none;
       background-color: #f0f8ff;
@@ -87,6 +102,7 @@
       border: 2px solid #ccc;
       font-size: 16px;
       text-align: left;
+      color: #000;
     }
   </style>
 </head>
@@ -174,7 +190,6 @@
         if (correctBtn) correctBtn.classList.add("correct");
       }
 
-      // Show solution
       solutionText.innerText = solution;
       solutionBox.style.display = "block";
     }
