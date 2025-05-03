@@ -1,116 +1,64 @@
-let currentQuestionIndex = 0;
-let userAnswers = [];
-let quizAnswered = false; // Track if the current question is answered
-
-// Shuffle quiz data on page load
-window.onload = function() {
-    shuffleArray(quizData);
-    displayQuestion();
-};
-
-// Display the current question
-function displayQuestion() {
-    const quizContainer = document.getElementById("quiz");
-    const solutionContainer = document.getElementById("solution");
-    quizContainer.innerHTML = "";
-    solutionContainer.style.display = "none";
-
+// Function to load the question from quizData
+function loadQuestion(currentQuestionIndex) {
+    const questionContainer = document.querySelector('.question-container');
+    const solutionContainer = document.querySelector('.solution p');
     const questionData = quizData[currentQuestionIndex];
 
-    // Display question
-    const questionElement = document.createElement("div");
-    questionElement.innerHTML = `<h2>${questionData.question}</h2>`;
-    quizContainer.appendChild(questionElement);
+    // Display question and options dynamically
+    questionContainer.innerHTML = `
+        <p class="question">${questionData.question}</p>
+        ${questionData.options.map((option) => `
+            <button class="answer-btn" onclick="checkAnswer(this, '${option.answer.charAt(0)}')">${option.answer}</button>
+        `).join('')}
+    `;
 
-    // Display options with letter A, B, C, D
-    const options = questionData.options;
-    Object.keys(options).forEach(key => {
-        const option = options[key];
-        const optionElement = document.createElement("div");
-        optionElement.innerHTML = `<label class="option"><input type="radio" name="answer" value="${key}"> ${key}. ${option}</label>`;
-        quizContainer.appendChild(optionElement);
-    });
-
-    // Handle answer selection
-    const optionsElements = document.querySelectorAll('input[name="answer"]');
-    optionsElements.forEach(option => {
-        option.onclick = function() {
-            quizAnswered = true;  // Mark the question as answered
-            userAnswers[currentQuestionIndex] = option.value;
-        };
-    });
-
-    // Handle Next and Back buttons
-    document.getElementById("next-btn").onclick = function() {
-        if (quizAnswered) {
-            showSolution();
-            updateNavigation();
-        } else {
-            alert("Please select an answer before proceeding.");
-        }
-    };
-
-    document.getElementById("prev-btn").onclick = function() {
-        if (currentQuestionIndex > 0) {
-            currentQuestionIndex--;
-            displayQuestion();
-            updateNavigation();
-        }
-    };
+    // Display solution text, but keep hidden until an answer is selected
+    solutionContainer.innerHTML = questionData.solution;
+    document.querySelector('.solution').style.display = 'none'; // Hide solution initially
 }
 
-// Show the solution for the current question
-function showSolution() {
-    const questionData = quizData[currentQuestionIndex];
-    const solutionContainer = document.getElementById("solution");
-
-    const correctAnswer = questionData.correctAnswer;
-    const userAnswer = userAnswers[currentQuestionIndex];
-    let solutionHTML = `<h3>Solution:</h3><p><strong>Correct Answer:</strong> ${correctAnswer}. ${questionData.options[correctAnswer]}</p>`;
-    solutionHTML += `<p><strong>Your Answer:</strong> ${userAnswer}. ${questionData.options[userAnswer]}</p>`;
-    solutionHTML += `<p>${questionData.solution}</p>`;
-
-    solutionContainer.innerHTML = solutionHTML;
-    solutionContainer.style.display = "block";
-
-    // Color the options based on correctness
-    const optionsElements = document.querySelectorAll('input[name="answer"]');
-    optionsElements.forEach(option => {
-        const label = option.parentElement;
-        if (option.value === correctAnswer) {
-            label.style.backgroundColor = "#28a745";  // Green for correct
-        } else if (option.value === userAnswer) {
-            label.style.backgroundColor = "#dc3545";  // Red for wrong
-        } else {
-            label.style.backgroundColor = "";  // Reset color
-        }
+// Function to check the selected answer
+function checkAnswer(button, selectedAnswer) {
+    const buttons = document.querySelectorAll('.answer-btn');
+    buttons.forEach(btn => {
+        btn.disabled = true; // Disable all buttons after answering
     });
-}
 
-// Update the visibility of navigation buttons
-function updateNavigation() {
-    document.getElementById("next-btn").style.display = "none";  // Hide Next button after showing solution
-    document.getElementById("prev-btn").style.display = "inline"; // Show Back button
-    if (currentQuestionIndex === quizData.length - 1) {
-        document.getElementById("next-btn").innerHTML = "Finish"; // Change text for the last question
+    const correctAnswer = quizData[currentQuestionIndex].options.find(option => option.correct);
+    button.classList.add(selectedAnswer === correctAnswer.answer.charAt(0) ? 'correct' : 'wrong');
+    
+    if (selectedAnswer !== correctAnswer.answer.charAt(0)) {
+        document.querySelector(`.answer-btn.${correctAnswer.answer.charAt(0)}`).classList.add('correct'); // Highlight the correct answer
     }
-    if (currentQuestionIndex === quizData.length) {
-        // Final results or end quiz here
-        displayResults();
-    }
+
+    // Show the solution
+    document.querySelector('.solution').style.display = 'block';
 }
 
-// Display final results
-function displayResults() {
-    const resultContainer = document.getElementById("result");
-    let correctCount = 0;
+// Function to finish the quiz
+function finishQuiz() {
+    alert('You have finished the quiz!');
+}
 
-    quizData.forEach((question, index) => {
-        const userAnswer = userAnswers[index];
-        if (userAnswer === question.correctAnswer) {
-            correctCount++;
-        }
+// Function to restart the quiz and shuffle the questions
+function restartQuiz() {
+    const buttons = document.querySelectorAll('.answer-btn');
+    buttons.forEach(btn => {
+        btn.disabled = false; // Enable buttons again
+        btn.classList.remove('correct', 'wrong');
     });
 
-    resultContainer.innerHTML = `<h3>You answered ${correctCount} out of ${quizData.length} correctly.</h3>`;
+    // Hide the solution and reset UI
+    document.querySelector('.solution').style.display = 'none';
+
+    // Shuffle questions for a new session
+    quizData.sort(() => Math.random() - 0.5); // Shuffle questions
+
+    currentQuestionIndex = 0; // Reset to first question
+    loadQuestion(currentQuestionIndex); // Load the first question
+}
+
+// Initialize the quiz with the first question
+function initializeQuiz() {
+    loadQuestion(currentQuestionIndex);
 }
