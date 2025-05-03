@@ -13,6 +13,7 @@ function displayQuestion() {
     const quizContainer = document.getElementById("quiz");
     const solutionContainer = document.getElementById("solution");
     quizContainer.innerHTML = "";
+    solutionContainer.style.display = "none";
 
     const questionData = quizData[currentQuestionIndex];
 
@@ -26,32 +27,9 @@ function displayQuestion() {
     Object.keys(options).forEach(key => {
         const option = options[key];
         const optionElement = document.createElement("div");
-        optionElement.innerHTML = `<label><input type="radio" name="answer" value="${key}"> ${key}. ${option}</label>`;
+        optionElement.innerHTML = `<label class="option"><input type="radio" name="answer" value="${key}"> ${key}. ${option}</label>`;
         quizContainer.appendChild(optionElement);
     });
-
-    // Show solution and next button only if the question is answered
-    solutionContainer.style.display = "none";  // Hide solution initially
-    quizAnswered = false; // Reset the quizAnswered flag
-
-    document.getElementById("next-btn").onclick = function() {
-        if (quizAnswered) {
-            // Show solution and enable navigation
-            showSolution();
-            updateNavigation();
-        } else {
-            alert("Please select an answer before proceeding.");
-        }
-    };
-
-    // Handle back navigation
-    document.getElementById("prev-btn").onclick = function() {
-        if (currentQuestionIndex > 0) {
-            currentQuestionIndex--;
-            displayQuestion();
-            updateNavigation();
-        }
-    };
 
     // Handle answer selection
     const optionsElements = document.querySelectorAll('input[name="answer"]');
@@ -61,6 +39,24 @@ function displayQuestion() {
             userAnswers[currentQuestionIndex] = option.value;
         };
     });
+
+    // Handle Next and Back buttons
+    document.getElementById("next-btn").onclick = function() {
+        if (quizAnswered) {
+            showSolution();
+            updateNavigation();
+        } else {
+            alert("Please select an answer before proceeding.");
+        }
+    };
+
+    document.getElementById("prev-btn").onclick = function() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            displayQuestion();
+            updateNavigation();
+        }
+    };
 }
 
 // Show the solution for the current question
@@ -68,7 +64,6 @@ function showSolution() {
     const questionData = quizData[currentQuestionIndex];
     const solutionContainer = document.getElementById("solution");
 
-    // Display the correct answer
     const correctAnswer = questionData.correctAnswer;
     const userAnswer = userAnswers[currentQuestionIndex];
     let solutionHTML = `<h3>Solution:</h3><p><strong>Correct Answer:</strong> ${correctAnswer}. ${questionData.options[correctAnswer]}</p>`;
@@ -77,8 +72,45 @@ function showSolution() {
 
     solutionContainer.innerHTML = solutionHTML;
     solutionContainer.style.display = "block";
+
+    // Color the options based on correctness
+    const optionsElements = document.querySelectorAll('input[name="answer"]');
+    optionsElements.forEach(option => {
+        const label = option.parentElement;
+        if (option.value === correctAnswer) {
+            label.style.backgroundColor = "#28a745";  // Green for correct
+        } else if (option.value === userAnswer) {
+            label.style.backgroundColor = "#dc3545";  // Red for wrong
+        } else {
+            label.style.backgroundColor = "";  // Reset color
+        }
+    });
 }
 
 // Update the visibility of navigation buttons
 function updateNavigation() {
-    document.getElementById("next-btn").style
+    document.getElementById("next-btn").style.display = "none";  // Hide Next button after showing solution
+    document.getElementById("prev-btn").style.display = "inline"; // Show Back button
+    if (currentQuestionIndex === quizData.length - 1) {
+        document.getElementById("next-btn").innerHTML = "Finish"; // Change text for the last question
+    }
+    if (currentQuestionIndex === quizData.length) {
+        // Final results or end quiz here
+        displayResults();
+    }
+}
+
+// Display final results
+function displayResults() {
+    const resultContainer = document.getElementById("result");
+    let correctCount = 0;
+
+    quizData.forEach((question, index) => {
+        const userAnswer = userAnswers[index];
+        if (userAnswer === question.correctAnswer) {
+            correctCount++;
+        }
+    });
+
+    resultContainer.innerHTML = `<h3>You answered ${correctCount} out of ${quizData.length} correctly.</h3>`;
+}
