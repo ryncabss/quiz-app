@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Civil Engineering Quiz</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Optional for styling -->
-</head>
+<head><meta charset="UTF-8"><title>Quiz App</title></head>
 <body>
-    <div id="quiz-container">
-        <h1>Civil Engineering Quiz</h1>
-        <div id="quiz"></div>
-        <button id="submit-btn">Submit Answers</button>
-        <button id="next-btn" style="display: none;">Next Question</button>
-        <div id="result"></div>
-    </div>
-
-    <script src="quiz-data.js"></script>
-    <script src="quiz-functions.js"></script>
+<div id="quiz-container" style="font-family: Arial; max-width: 500px; margin: auto;">
+  <h3 id="question-number"></h3>
+  <p id="question-text"></p>
+  <div id="choices"></div>
+  <p id="answer" style="font-weight: bold;"></p>
+  <button id="solutionBtn" onclick="toggleSolution()" style="display: none; margin-top: 10px;">Show Solution</button>
+  <div id="solution" style="display: none; border: 1px solid #ccc; padding: 10px; margin-top: 10px; background-color: #f9f9f9;"></div>
+  <div style="margin-top: 20px;">
+    <button onclick="prevQuestion()" id="prevBtn" style="display: none;">← Back</button>
+    <button onclick="nextQuestion()" id="nextBtn">Next →</button>
+    <button onclick="restartQuiz()" id="restartBtn" style="display: none;">Restart</button>
+  </div>
+</div>
+<script src="quiz-data.js"></script>
+<script src="quiz-functions.js"></script>
 </body>
 </html>
