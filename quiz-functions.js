@@ -1,5 +1,6 @@
 let currentQuestionIndex = 0;
 let userAnswers = [];
+let quizAnswered = false; // Track if the current question is answered
 
 // Shuffle quiz data on page load
 window.onload = function() {
@@ -10,75 +11,74 @@ window.onload = function() {
 // Display the current question
 function displayQuestion() {
     const quizContainer = document.getElementById("quiz");
+    const solutionContainer = document.getElementById("solution");
     quizContainer.innerHTML = "";
 
     const questionData = quizData[currentQuestionIndex];
-    const questionElement = document.createElement("div");
 
     // Display question
+    const questionElement = document.createElement("div");
     questionElement.innerHTML = `<h2>${questionData.question}</h2>`;
     quizContainer.appendChild(questionElement);
 
-    // Display options
-    questionData.options.forEach(option => {
+    // Display options with letter A, B, C, D
+    const options = questionData.options;
+    Object.keys(options).forEach(key => {
+        const option = options[key];
         const optionElement = document.createElement("div");
-        optionElement.innerHTML = `<label><input type="radio" name="answer" value="${option}"> ${option}</label>`;
+        optionElement.innerHTML = `<label><input type="radio" name="answer" value="${key}"> ${key}. ${option}</label>`;
         quizContainer.appendChild(optionElement);
     });
 
-    // Show next button after answering
-    const nextButton = document.getElementById("next-btn");
-    nextButton.style.display = "none";
-    document.getElementById("submit-btn").style.display = "block";
+    // Show solution and next button only if the question is answered
+    solutionContainer.style.display = "none";  // Hide solution initially
+    quizAnswered = false; // Reset the quizAnswered flag
 
-    // Handle submit answer
-    document.getElementById("submit-btn").onclick = function() {
-        handleAnswerSubmission(questionData.correctAnswer);
-        document.getElementById("submit-btn").style.display = "none";
-        nextButton.style.display = "block";
-    };
-}
-
-// Handle the submission of answers
-function handleAnswerSubmission(correctAnswer) {
-    const selectedOption = document.querySelector('input[name="answer"]:checked');
-    if (selectedOption) {
-        const userAnswer = selectedOption.value;
-        userAnswers[currentQuestionIndex] = userAnswer;
-
-        const allOptions = document.querySelectorAll('input[name="answer"]');
-        allOptions.forEach(option => {
-            const optionLabel = option.parentElement;
-            if (option.value === correctAnswer) {
-                optionLabel.style.backgroundColor = "green"; // Correct answer
-            } else if (option.value === userAnswer) {
-                optionLabel.style.backgroundColor = "red"; // Wrong answer
-            }
-        });
-    }
-}
-
-// Move to next question
-document.getElementById("next-btn").onclick = function() {
-    if (currentQuestionIndex < quizData.length - 1) {
-        currentQuestionIndex++;
-        displayQuestion();
-    } else {
-        displayResults();
-    }
-};
-
-// Display final results after quiz completion
-function displayResults() {
-    const resultContainer = document.getElementById("result");
-    let correctCount = 0;
-
-    quizData.forEach((question, index) => {
-        const userAnswer = userAnswers[index];
-        if (userAnswer === question.correctAnswer) {
-            correctCount++;
+    document.getElementById("next-btn").onclick = function() {
+        if (quizAnswered) {
+            // Show solution and enable navigation
+            showSolution();
+            updateNavigation();
+        } else {
+            alert("Please select an answer before proceeding.");
         }
-    });
+    };
 
-    resultContainer.innerHTML = `<h3>You answered ${correctCount} out of ${quizData.length} correctly.</h3>`;
+    // Handle back navigation
+    document.getElementById("prev-btn").onclick = function() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            displayQuestion();
+            updateNavigation();
+        }
+    };
+
+    // Handle answer selection
+    const optionsElements = document.querySelectorAll('input[name="answer"]');
+    optionsElements.forEach(option => {
+        option.onclick = function() {
+            quizAnswered = true;  // Mark the question as answered
+            userAnswers[currentQuestionIndex] = option.value;
+        };
+    });
 }
+
+// Show the solution for the current question
+function showSolution() {
+    const questionData = quizData[currentQuestionIndex];
+    const solutionContainer = document.getElementById("solution");
+
+    // Display the correct answer
+    const correctAnswer = questionData.correctAnswer;
+    const userAnswer = userAnswers[currentQuestionIndex];
+    let solutionHTML = `<h3>Solution:</h3><p><strong>Correct Answer:</strong> ${correctAnswer}. ${questionData.options[correctAnswer]}</p>`;
+    solutionHTML += `<p><strong>Your Answer:</strong> ${userAnswer}. ${questionData.options[userAnswer]}</p>`;
+    solutionHTML += `<p>${questionData.solution}</p>`;
+
+    solutionContainer.innerHTML = solutionHTML;
+    solutionContainer.style.display = "block";
+}
+
+// Update the visibility of navigation buttons
+function updateNavigation() {
+    document.getElementById("next-btn").style
