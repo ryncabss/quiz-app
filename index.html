@@ -4,70 +4,292 @@
   <meta charset="UTF-8">
   <title>Quiz App</title>
   <style>
-    /* Frame styling */
-    #quiz-frame {
-      border: 3px solid #4CAF50; /* Green border for the frame */
-      padding: 20px;
-      margin: 20px;
-      border-radius: 10px;
-      background-color: #f9f9f9;
+    /* General body styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden; /* Prevent horizontal scrolling */
+      position: relative; /* Allow absolute positioning of fireworks */
+      height: 100vh; /* Ensure full viewport height */
     }
 
-    /* Styling for the toggle button */
-    #toggle-frame-btn {
-      background-color: #4CAF50;
+    /* Button styling for toggling the frame */
+    #toggle-slide-btn {
+      background-color: #E0AA3E; /* Buy Me A Coffee color */
       color: white;
-      padding: 10px;
+      padding: 10px 20px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      margin-bottom: 20px;
+      position: fixed;
+      right: 20px; /* Keep the button at the bottom-right */
+      bottom: 20px;
+      z-index: 1001; /* Make sure the button is on top */
     }
-    #toggle-frame-btn:hover {
+
+    #toggle-slide-btn:hover {
+      background-color: #FFD700; /* Slightly darker gold on hover */
+    }
+
+    /* Frame that will slide in from the right */
+    #sliding-frame {
+      position: fixed;
+      right: -250px; /* Initially hidden off-screen to the right */
+      bottom: 70px; /* Positioned above the button */
+      width: 200px; /* Smaller frame width */
+      height: 150px; /* Smaller frame height */
+      background-color: #f9f9f9;
+      border: 3px solid #4CAF50;
+      padding: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      transition: right 0.5s ease-in-out; /* Smooth slide-in transition */
+      z-index: 1000; /* Ensure it's above other content */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    /* Styling for the buttons inside the frame (smaller) */
+    .frame-btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 8px 16px; /* Smaller button */
+      border: none;
+      border-radius: 5px;
+      text-decoration: none; /* Remove underline from links */
+      text-align: center;
+      width: 100%;
+      display: block;
+      margin-top: 10px;
+    }
+
+    .frame-btn:hover {
       background-color: #45a049;
     }
+
+    /* Specific colors for buttons */
+    .buy-coffee-btn {
+      background-color: #E0AA3E; /* Buy me a coffee color */
+    }
+
+    .gcash-btn {
+      background-color: #0061F2; /* Gcash color */
+    }
+
+    /* Fireworks effect */
+    .fireworks {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10000;
+      pointer-events: none;
+    }
+    .fireworks .spark {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background-color: #fff;
+      border-radius: 50%;
+      animation: bounce-spark 1.5s infinite;
+    }
+
+    /* Spark Bouncing Animation */
+    @keyframes bounce-spark {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      25% { opacity: 0.8; transform: translateY(-50px) scale(1.2); }
+      50% { opacity: 0.6; transform: translateY(0) scale(1.5); }
+      75% { opacity: 0.8; transform: translateY(50px) scale(1.2); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Fireworks burst animation */
+    .burst {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      animation: burst-animation 1s forwards;
+    }
+
+    @keyframes burst-animation {
+      0% {
+        opacity: 1;
+        transform: scale(0);
+      }
+      50% {
+        opacity: 0.8;
+        transform: scale(3);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(5);
+      }
+    }
+
+    /* Large "THANK YOU SO MUCH" text */
+    #thank-you-text {
+      position: absolute;
+      top: 30%; /* Adjust the vertical position */
+      left: 50%;
+      transform: translateX(-50%); /* Center horizontally */
+      font-size: 60px; /* Large text */
+      color: #E0AA3E; /* Orange-yellow color */
+      font-weight: bold;
+      text-align: center;
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
+      z-index: 5000; /* Ensure it's above the fireworks */
+      opacity: 0; /* Initially hidden */
+      transition: opacity 1s ease-out; /* Fade out smoothly */
+      line-height: 1.5; /* Add spacing between lines */
+      animation: bounce-text 1.5s infinite; /* Bounce animation */
+    }
+
+    /* Bouncing animation for "THANK YOU SO MUCH" */
+    @keyframes bounce-text {
+      0% {
+        transform: translateY(0);
+      }
+      25% {
+        transform: translateY(-30px);
+      }
+      50% {
+        transform: translateY(0);
+      }
+      75% {
+        transform: translateY(20px);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+
   </style>
 </head>
 <body>
-  <div style="text-align: center; margin-top: 20px;">
-    <!-- Toggle button for showing/hiding the frame -->
-    <button id="toggle-frame-btn" onclick="toggleFrame()">Hide Frame</button>
+
+  <!-- Large Thank You Text (initially hidden) -->
+  <div id="thank-you-text">THANK YOU SO MUCH</div>
+
+  <!-- Sliding Frame -->
+  <div id="sliding-frame">
+    <!-- Buttons inside the frame -->
+    <a href="https://buymeacoffee.com/mindcells" class="frame-btn buy-coffee-btn" target="_blank">Buy me a coffee</a>
+    <a href="https://www.gcash.com/" class="frame-btn gcash-btn" target="_blank">Send Me Via Gcash</a>
   </div>
 
-  <!-- Quiz container inside a frame -->
-  <div id="quiz-frame">
-    <div id="quiz-container" style="font-family: Arial; max-width: 500px; margin: auto;">
-      <h3 id="question-number"></h3>
-      <p id="question-text"></p>
-      <div id="choices"></div>
-      <p id="answer" style="font-weight: bold;"></p>
-      <button id="solutionBtn" onclick="toggleSolution()" style="display: none; margin-top: 10px;">Show Solution</button>
-      <div id="solution" style="display: none; border: 1px solid #ccc; padding: 10px; margin-top: 10px; background-color: #f9f9f9;"></div>
-      <div style="margin-top: 20px;">
-        <button onclick="prevQuestion()" id="prevBtn" style="display: none;">← Back</button>
-        <button onclick="nextQuestion()" id="nextBtn">Next →</button>
-        <button onclick="restartQuiz()" id="restartBtn" style="display: none;">Restart</button>
-      </div>
-    </div>
-  </div>
+  <!-- Button to toggle the sliding frame -->
+  <button id="toggle-slide-btn" onclick="toggleSlidingFrame()">Buy Me A Coffee</button>
 
-  <!-- Link to external JS files -->
-  <script src="quiz-data.js"></script>
-  <script src="quiz-functions.js"></script>
+  <!-- Fireworks container -->
+  <div id="fireworks" class="fireworks"></div>
 
   <script>
-    // JavaScript function to toggle the visibility of the frame
-    function toggleFrame() {
-      const frame = document.getElementById('quiz-frame');
-      const toggleBtn = document.getElementById('toggle-frame-btn');
-      
-      if (frame.style.display === 'none') {
-        frame.style.display = 'block';
-        toggleBtn.textContent = 'Hide Frame';
-      } else {
-        frame.style.display = 'none';
+    let clickCount = 0;
+    let intervalId;
+
+    function toggleSlidingFrame() {
+      const frame = document.getElementById('sliding-frame');
+      const toggleBtn = document.getElementById('toggle-slide-btn');
+      const fireworksContainer = document.getElementById('fireworks');
+      const thankYouText = document.getElementById('thank-you-text');
+
+      // Show the large "THANK YOU SO MUCH" text
+      thankYouText.style.opacity = 1; // Fade it in
+      showFireworks(fireworksContainer); // Trigger fireworks animation
+
+      // Fireworks effect
+      setTimeout(() => {
+        // Hide the "THANK YOU SO MUCH" text after fireworks show
+        thankYouText.style.opacity = 0; // Fade it out
+      }, 3000); // Hide text after 3 seconds (duration of fireworks)
+
+      // Toggle sliding frame
+      if (frame.style.right === '20px') {
+        // Slide it out of view (off to the right)
+        frame.style.right = '-250px';
         toggleBtn.textContent = 'Show Frame';
+        toggleBtn.style.backgroundColor = '#E0AA3E'; // Buy me a coffee color
+      } else {
+        // Slide it in from the right
+        frame.style.right = '20px'; // Position it 20px from the right edge
+        toggleBtn.textContent = 'Hide Frame';
+        toggleBtn.style.backgroundColor = '#E0AA3E'; // Buy me a coffee color
       }
+
+      // Button text change behavior
+      changeButtonText();
+    }
+
+    // Function to handle the button text changes every 3 seconds
+    function changeButtonText() {
+      const toggleBtn = document.getElementById('toggle-slide-btn');
+      let buttonTextIndex = 0;
+
+      const buttonTexts = [
+        { text: "Buy Me A Coffee", color: "#E0AA3E" }, // Initial text and color
+        { text: "Send Me Via Gcash", color: "#0061F2" }, // Second text and color
+        { text: "Pretty Please! Thank you!", color: "#9ACD32" }, // Third text and color
+      ];
+
+      // Clear any previous interval to stop it from running
+      clearInterval(intervalId);
+
+      // Function to change the button text every 3 seconds
+      intervalId = setInterval(() => {
+        if (buttonTextIndex < buttonTexts.length) {
+          const { text, color } = buttonTexts[buttonTextIndex];
+          toggleBtn.textContent = text;
+          toggleBtn.style.backgroundColor = color;
+          buttonTextIndex++;
+        } else {
+          clearInterval(intervalId); // Stop changing text after the last one
+        }
+      }, 3000); // Change text every 3 seconds
+    }
+
+    // Function to generate fireworks animation
+    function showFireworks(container) {
+      // Create burst effects to simulate fireworks
+      for (let i = 0; i < 5; i++) {
+        let burst = document.createElement('div');
+        burst.classList.add('burst');
+        burst.style.left = `${Math.random() * 100}%`;
+        burst.style.top = `${Math.random() * 100}%`;
+        burst.style.backgroundColor = getRandomColor(); // Random color for the sparks
+        container.appendChild(burst);
+
+        // Remove burst after animation ends
+        setTimeout(() => {
+          container.removeChild(burst);
+        }, 1000);
+      }
+
+      // Generate spark particles around the burst
+      for (let i = 0; i < 30; i++) {
+        let spark = document.createElement('div');
+        spark.classList.add('spark');
+        spark.style.left = `${Math.random() * 100}%`;
+        spark.style.top = `${Math.random() * 100}%`; // Random vertical position
+        spark.style.animationDuration = `${Math.random() * 1 + 1}s`; // Random animation duration
+        spark.style.backgroundColor = getRandomColor(); // Random color for the sparks
+        container.appendChild(spark);
+
+        // Remove spark after animation ends
+        setTimeout(() => {
+          container.removeChild(spark);
+        }, 1000);
+      }
+    }
+
+    // Function to get a random color for fireworks
+    function getRandomColor() {
+      const colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3'];
+      return colors[Math.floor(Math.random() * colors.length)];
     }
   </script>
 </body>
