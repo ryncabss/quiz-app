@@ -8,7 +8,7 @@ const quizData = [
             D: "m/s²"
         },
         correctAnswer: "A",
-        solution: "Young's Modulus is a measure of the stiffness of a material and its unit is Pascals (Pa)."
+        solution: "Young's Modulus is a measure of the stiffness of a material, and its unit is Pascals (Pa)."
     },
     {
         question: "Which material is known as the 'King of Building Materials'?",
